@@ -9,6 +9,9 @@ const router = express.Router();
 // Load environment variables
 require('dotenv').config();
 
+// Use node-fetch for Node.js < 18 compatibility
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+
 // Import middleware validators
 const {
     validateEmergencyRequest,
@@ -39,6 +42,9 @@ const db = require('../data/mockDatabase');
 const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 const PLACES_API_BASE = 'https://maps.googleapis.com/maps/api/place';
 
+// Log API key status on startup (masked for security)
+console.log(`🔑 Google Places API Key: ${GOOGLE_PLACES_API_KEY ? 'Configured (' + GOOGLE_PLACES_API_KEY.slice(0, 8) + '...)' : 'NOT CONFIGURED'}`);
+
 // =====================================
 // GET /api/locations
 // Proxy endpoint for Google Places API
@@ -62,12 +68,15 @@ const PLACES_API_BASE = 'https://maps.googleapis.com/maps/api/place';
 router.get('/locations', asyncHandler(async (req, res) => {
     const { lat, lng, type, radius = 5000, keyword } = req.query;
 
+    console.log(`📍 Location request: lat=${lat}, lng=${lng}, type=${type}, radius=${radius}`);
+
     if (!lat || !lng) {
         throw new APIError('Latitude and longitude are required', 400);
     }
 
     if (!GOOGLE_PLACES_API_KEY) {
-        throw new APIError('Google Places API key not configured on server', 500);
+        console.error('❌ GOOGLE_PLACES_API_KEY environment variable is not set!');
+        throw new APIError('Google Places API key not configured on server. Please set GOOGLE_PLACES_API_KEY environment variable.', 500);
     }
 
     try {
@@ -84,15 +93,20 @@ router.get('/locations', asyncHandler(async (req, res) => {
             url += `&keyword=${encodeURIComponent(keyword)}`;
         }
 
+        console.log(`🌐 Fetching from Google Places API...`);
         const response = await fetch(url);
         const data = await response.json();
 
-        console.log(`🗺️  Places API: Found ${data.results?.length || 0} results for type: ${type || 'all'}`);
+        console.log(`🗺️  Places API Response: status=${data.status}, results=${data.results?.length || 0}`);
+        
+        if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
+            console.error(`⚠️  Places API Error: ${data.status} - ${data.error_message || 'No error message'}`);
+        }
 
         res.json(data);
     } catch (error) {
-        console.error('Error fetching from Google Places API:', error);
-        throw new APIError('Failed to fetch locations from Google Places API', 500);
+        console.error('❌ Error fetching from Google Places API:', error.message);
+        throw new APIError(`Failed to fetch locations: ${error.message}`, 500);
     }
 }));
 
