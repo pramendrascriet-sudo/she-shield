@@ -8,30 +8,73 @@ const API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 const PLACES_API_BASE = 'https://maps.googleapis.com/maps/api/place';
 
-// Location type configurations
+// Location type configurations with validation rules
 const LOCATION_TYPES = {
     police: {
         types: ['police'],
         keywords: ['police station', 'police chowki', 'police thana'],
+        // Required types - at least one must be present in the place's types array
+        requiredTypes: ['police'],
+        // Exclude places with these terms in the name (case-insensitive)
+        excludeTerms: ['coaching', 'academy', 'school', 'college', 'institute', 'training', 'driving'],
         icon: 'Shield',
         color: 'bg-blue-500',
         lightColor: 'bg-blue-100 text-blue-600'
     },
     womenCenter: {
         types: ['establishment'],
-        keywords: ['women helpline', 'mahila thana', 'women police station', 'women help center', 'women safety center'],
+        keywords: ['women helpline', 'mahila thana', 'women police station', 'women help center', 'women safety center', 'nari niketan'],
+        requiredTypes: [], // No strict type requirement, rely on keywords
+        excludeTerms: ['gym', 'salon', 'spa', 'beauty', 'boutique', 'fashion'],
         icon: 'Users',
         color: 'bg-purple-500',
         lightColor: 'bg-purple-100 text-purple-600'
     },
     hospital: {
-        types: ['hospital', 'health'],
-        keywords: ['hospital', 'emergency', 'clinic'],
+        types: ['hospital'],
+        keywords: ['hospital', 'emergency', 'medical center'],
+        requiredTypes: ['hospital', 'health', 'doctor'],
+        excludeTerms: ['veterinary', 'vet', 'animal', 'pet', 'dental clinic', 'eye clinic', 'skin clinic'],
         icon: 'Building',
         color: 'bg-red-500',
         lightColor: 'bg-red-100 text-red-600'
     }
 };
+
+/**
+ * Validate if a place is relevant to the requested category
+ * @param {Object} place - Google Place object
+ * @param {string} type - Location type (police, womenCenter, hospital)
+ * @returns {boolean} True if the place is valid for the category
+ */
+function isValidPlace(place, type) {
+    const config = LOCATION_TYPES[type];
+    if (!config) return false;
+
+    const placeName = (place.name || '').toLowerCase();
+    const placeTypes = place.types || [];
+
+    // Check for excluded terms in the name
+    for (const term of config.excludeTerms) {
+        if (placeName.includes(term.toLowerCase())) {
+            console.log(`Excluding "${place.name}" - contains excluded term: ${term}`);
+            return false;
+        }
+    }
+
+    // If required types are specified, at least one must be present
+    if (config.requiredTypes.length > 0) {
+        const hasRequiredType = config.requiredTypes.some(reqType => 
+            placeTypes.includes(reqType)
+        );
+        if (!hasRequiredType) {
+            console.log(`Excluding "${place.name}" - missing required types: ${config.requiredTypes.join(', ')}`);
+            return false;
+        }
+    }
+
+    return true;
+}
 
 /**
  * Calculate distance between two coordinates (Haversine formula)
@@ -117,7 +160,12 @@ async function fetchNearbyPlaces(location, type, radius = 5000) {
             new Map(results.map(place => [place.place_id, place])).values()
         );
 
-        return uniquePlaces;
+        // Filter out irrelevant places based on validation rules
+        const validPlaces = uniquePlaces.filter(place => isValidPlace(place, type));
+        
+        console.log(`${type}: ${results.length} raw -> ${uniquePlaces.length} unique -> ${validPlaces.length} valid`);
+
+        return validPlaces;
     } catch (error) {
         console.error(`Error fetching ${type} places:`, error);
         throw error;
