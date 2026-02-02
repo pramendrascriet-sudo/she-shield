@@ -78,13 +78,13 @@ function App() {
                 <div className="w-8 h-8 rounded-full gradient-violet flex items-center justify-center">
                   <Shield className="w-4 h-4 text-white" />
                 </div>
-                <span className="font-bold text-purple-600">SheShield</span>
+                <span className="font-bold text-purple-600">Shesphere</span>
               </div>
               <p className="text-gray-400 text-sm">
                 Made with 💜 for women everywhere
               </p>
               <p className="text-gray-300 text-xs mt-2">
-                © 2024 SheShield. Emergency numbers: 181 (Women Helpline) | 100 (Police) | 108 (Ambulance)
+                © 2024 Shesphere. Emergency numbers: 181 (Women Helpline) | 100 (Police) | 108 (Ambulance)
               </p>
             </div>
           </footer>

@@ -1,4 +1,4 @@
-# 🛡️ She-Shield - Women Safety Platform
+# 🛡️ Shesphere - Women Safety Platform
 
 A comprehensive safety and healthcare platform designed for  women, providing emergency assistance, medical resources, and safety features.
 
@@ -40,8 +40,8 @@ A comprehensive safety and healthcare platform designed for  women, providing em
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/pramendrascriet-sudo/she-shield.git
-cd she-shield
+git clone https://github.com/pramendrascriet-sudo/shesphere.git
+cd shesphere
 ```
 
 2. **Install frontend dependencies**
@@ -98,7 +98,7 @@ The backend will run on `http://localhost:3000`
 ## 📁 Project Structure
 
 ```
-she-shield/
+shesphere/
 ├── src/                    # Frontend React application
 │   ├── components/         # React components
 │   ├── context/           # React context providers

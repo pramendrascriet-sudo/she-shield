@@ -1,7 +1,7 @@
 export const translations = {
     en: {
         // Header
-        appName: "SheShield",
+        appName: "Shesphere",
         tagline: "Your Safety Companion",
 
         // Navigation

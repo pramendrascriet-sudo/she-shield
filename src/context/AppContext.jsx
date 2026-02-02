@@ -193,7 +193,7 @@ export const AppProvider = ({ children }) => {
         const url = getShareableLocation();
         if (!url) return;
 
-        const message = `🆘 SheShield Safety Alert! I'm sharing my location with you. Please check on me. ${url}`;
+        const message = `🆘 Shesphere Safety Alert! I'm sharing my location with you. Please check on me. ${url}`;
 
         if (method === 'whatsapp') {
             window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');

@@ -9,7 +9,7 @@
  * - SOS event logging for analytics
  * 
  * @version 2.0.0
- * @author SheShield Platform Team
+ * @author Shesphere Platform Team
  */
 
 const express = require('express');
@@ -107,7 +107,7 @@ app.use('/api', apiRoutes);
  */
 app.get('/', (req, res) => {
     res.json({
-        message: 'Welcome to SheShield - Women Safety Platform API',
+        message: 'Welcome to Shesphere - Women Safety Platform API',
         version: '2.0.0',
         documentation: {
             endpoints: {
@@ -154,7 +154,7 @@ app.use(globalErrorHandler);
  */
 app.listen(PORT, () => {
     console.log('\n========================================');
-    console.log('🛡️  SHESHIELD - WOMEN SAFETY PLATFORM API');
+    console.log('🛡️  SHESPHERE - WOMEN SAFETY PLATFORM API');
     console.log('========================================');
     console.log(`📍 Server running on: http://localhost:${PORT}`);
     console.log(`📍 API endpoints at:  http://localhost:${PORT}/api`);

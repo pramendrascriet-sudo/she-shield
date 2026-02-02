@@ -1,4 +1,4 @@
-# Google Places API Setup Guide for SheShield
+# Google Places API Setup Guide for Shesphere
 
 ## Quick Start Guide
 
@@ -10,7 +10,7 @@
 2. **Create a New Project** (or select existing)
    - Click "Select a project" dropdown at the top
    - Click "NEW PROJECT"
-   - Name: `SheShield-Women-Safety`
+   - Name: `Shesphere-Women-Safety`
    - Click **CREATE**
 
 3. **Enable Google Places API**

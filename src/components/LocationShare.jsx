@@ -116,7 +116,7 @@ const LocationShare = () => {
                                         {emergencyContacts.map((contact) => (
                                             <a
                                                 key={contact.id}
-                                                href={`sms:${contact.phone}?body=${encodeURIComponent(`🆘 SheShield Alert! Check my location: ${locationUrl}`)}`}
+                                                href={`sms:${contact.phone}?body=${encodeURIComponent(`🆘 Shesphere Alert! Check my location: ${locationUrl}`)}`}
                                                 className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors"
                                             >
                                                 <span className="w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center text-xs font-bold">
